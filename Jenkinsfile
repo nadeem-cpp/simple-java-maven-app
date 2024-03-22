@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn -B -DskipTests clean package'
+                sh 'mvn -Dmaven.test.failure.ignore=true clean package'
             }
         }
         // stage('Static Code Analysis') {
