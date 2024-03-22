@@ -1,9 +1,19 @@
 pipeline {
     agent any
+
     stages {
-        stage('Build') { 
+        stage('Build') {
             steps {
-                sh 'mvn -B -DskipTests clean package' 
+                sh 'mvn clean install'
+            }
+        }
+        stage('Static Code Analysis') {
+            steps {
+                // Execute FindBugs
+                sh 'mvn findbugs:findbugs'
+
+                // Execute PMD
+                sh 'mvn pmd:pmd'
             }
         }
     }
