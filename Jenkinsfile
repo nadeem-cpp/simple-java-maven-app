@@ -1,19 +1,27 @@
 pipeline {
     agent any
-
+    options {
+        skipStagesAfterUnstable()
+    }
     stages {
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                sh 'mvn -B -DskipTests clean package'
             }
         }
-        stage('Static Code Analysis') {
+        stage('Test') {
             steps {
-                // Execute FindBugs
-                sh 'mvn findbugs:findbugs'
-
-                // Execute PMD
-                sh 'mvn pmd:pmd'
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
+        stage('Deliver') { 
+            steps {
+                sh './jenkins/scripts/deliver.sh' 
             }
         }
     }
